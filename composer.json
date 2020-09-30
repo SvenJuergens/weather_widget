@@ -1,0 +1,23 @@
+{
+    "name": "svenjuergens/weather-widget",
+    "type": "typo3-cms-extension",
+    "description": "Weather by Wttr.in",
+    "authors": [],
+    "require": {
+        "typo3/cms-core": "^10.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "SvenJuergens\\WeatherWidget\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SvenJuergens\\WeatherWidget\\Tests\\": "Tests"
+        }
+    },
+    "replace": {
+        "svenjuergens/weather-widget": "self.version",
+        "typo3-ter/weather-widget": "self.version"
+    }
+}

@@ -1,0 +1,33 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Widget/Widget" />
+<f:section name="main">
+    <style>
+        .weatherWidgetContent{
+            height: 100%;
+            width: 100%;
+            background-image: url(https://source.unsplash.com/300x300/?berlin);
+            text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .weatherWidgetContent div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            backdrop-filter: blur(4px);
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+    <div class="weatherWidgetContent">
+        <div>
+            <span style="font-size: 5rem; line-height: 1">{weather.0}</span>
+            <span style="font-size: 3rem">{weather.2}</span>
+            <span style="font-size: 175%; line-height: 1.75rem;">{weather.1} {weather.3}</span>
+        </div>
+    </div>
+</f:section>
+</html>

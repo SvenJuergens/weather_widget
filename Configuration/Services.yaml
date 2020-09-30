@@ -1,0 +1,33 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  SvenJuergens\WeatherWidget\:
+    resource: '../Classes/*'
+
+  cache.dashboard.weather:
+    class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
+    factory: [ '@TYPO3\CMS\Core\Cache\CacheManager', 'getCache' ]
+    arguments:
+      $identifier: 'dashboard_weather'
+
+
+  dashboard.widget.weatherWidget:
+    class: 'SvenJuergens\WeatherWidget\Widgets\WeatherWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $buttonProvider: ''
+      $cache: '@cache.dashboard.weather'
+      $options:
+        location: 'Berlin'
+    tags:
+      - name: dashboard.widget
+        identifier: 'weatherWidget'
+        groupNames: 'general'
+        title: 'WeatherWidget'
+        description: 'Current weather by Wttr.in'
+        iconIdentifier: 'content-widget-rss'
+        height: 'medium'
+        width: 'small'
