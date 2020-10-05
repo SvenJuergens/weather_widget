@@ -13,12 +13,10 @@ services:
     arguments:
       $identifier: 'dashboard_weather'
 
-
   dashboard.widget.weatherWidget:
     class: 'SvenJuergens\WeatherWidget\Widgets\WeatherWidget'
     arguments:
       $view: '@dashboard.views.widget'
-      $buttonProvider: ''
       $cache: '@cache.dashboard.weather'
       $options:
         location: 'Berlin'
@@ -26,8 +24,8 @@ services:
       - name: dashboard.widget
         identifier: 'weatherWidget'
         groupNames: 'general'
-        title: 'WeatherWidget'
+        title: 'Weather Widget'
         description: 'Current weather by Wttr.in'
-        iconIdentifier: 'content-widget-rss'
+        iconIdentifier: 'actions-cloud'
         height: 'medium'
         width: 'small'

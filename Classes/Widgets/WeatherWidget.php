@@ -17,15 +17,17 @@ namespace SvenJuergens\WeatherWidget\Widgets;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface as Cache;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Dashboard\Widgets\AdditionalCssInterface;
-use TYPO3\CMS\Dashboard\Widgets\ButtonProviderInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Dashboard\Widgets\RequireJsModuleInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetConfigurationInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
-class WeatherWidget implements WidgetInterface, AdditionalCssInterface
+class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJsModuleInterface
 {
     /**
      * @var WidgetConfigurationInterface
@@ -48,15 +50,28 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface
     private $options;
 
     /**
-     * @var ButtonProviderInterface|null
+     * @var UriBuilder
      */
-    private $buttonProvider;
+    protected $uriBuilder;
 
+    /**
+     * @var string
+     */
+    protected $backendUserLocation = '';
+
+    /**
+     * WeatherWidget constructor.
+     * @param WidgetConfigurationInterface $configuration
+     * @param Cache $cache
+     * @param StandaloneView $view
+     * @param UriBuilder $uriBuilder
+     * @param array $options
+     */
     public function __construct(
         WidgetConfigurationInterface $configuration,
         Cache $cache,
         StandaloneView $view,
-        $buttonProvider = null,
+        UriBuilder $uriBuilder,
         array $options = []
     ) {
         $this->configuration = $configuration;
@@ -69,14 +84,19 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface
             ],
             $options
         );
+        $this->uriBuilder = $uriBuilder;
     }
 
     public function renderWidgetContent(): string
     {
+        $this->backendUserLocation = $this->getBackendUserLocation();
+
         $this->view->setTemplate('WeatherWidget');
         $this->view->assignMultiple([
             'weather' =>  $this->getWeather() ?: '',
             'options' => $this->options,
+            'button' => $this->getButton(),
+            'location' => $this->backendUserLocation,
             'configuration' => $this->configuration,
         ]);
         return $this->view->render();
@@ -85,6 +105,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface
 
     protected function getWeather(): array
     {
+
         $url = 'https://' . $this->options['language'] . '.wttr.in/' . $this->getLocation() .  '?format=%c|%C|%t|%w|%l';
      #   $cacheHash = md5($url);
      #   if ($weatherDetails = $this->cache->get($cacheHash)) {
@@ -105,7 +126,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface
 
     protected function getLocation(): string
     {
-        return $this->options['location'];
+        return $this->backendUserLocation ?: $this->options['location'];
     }
 
     public function getCssFiles(): array
@@ -113,4 +134,34 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface
         return ['EXT:weather_widget/Resources/Public/Css/weatherWidget.css'];
     }
 
+    public function getButton(): array
+    {
+        return [
+            'link' => $this->uriBuilder->buildUriFromRoute('dashboard', ['location' => 'abc']),
+            'title' => 'save location'
+        ];
+    }
+    protected function getBackendUserLocation(): string
+    {
+        $backendUser = $this->getBackendUserAuthentication();
+
+        if (!$backendUser instanceof BackendUserAuthentication) {
+            return '';
+        }
+
+        return $backendUser->uc['BackendComponents']['States']['DashboardWeatherWidget']['location'] ?? '';
+    }
+
+
+    protected function getBackendUserAuthentication(): ?BackendUserAuthentication
+    {
+        return $GLOBALS['BE_USER'];
+    }
+
+    public function getRequireJsModules(): array
+    {
+        return [
+            'TYPO3/CMS/WeatherWidget/AddUserLocation',
+        ];
+    }
 }
