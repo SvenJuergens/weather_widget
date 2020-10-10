@@ -9,6 +9,12 @@
 			<trans-unit id="otherLocation" xml:space="preserve">
 				<source>Other Location</source>
 			</trans-unit>
+			<trans-unit id="widgets.weather.title" xml:space="preserve">
+				<source>Weather Widget</source>
+			</trans-unit>
+			<trans-unit id="widgets.weather.description" xml:space="preserve">
+				<source>Current weather by Wttr.in</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
