@@ -77,10 +77,11 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
         $this->configuration = $configuration;
         $this->view = $view;
         $this->cache = $cache;
+        $this->backendUserLocation = $this->getBackendUserLocation();
         $this->options = array_merge(
             [
                 'lifeTime' => 3600,
-                'language' => 'de'
+                'language' => $this->getBackendUserAuthentication()->uc['lang'] ?: 'en'
             ],
             $options
         );
@@ -89,7 +90,6 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
 
     public function renderWidgetContent(): string
     {
-        $this->backendUserLocation = $this->getBackendUserLocation();
 
         $this->view->setTemplate('WeatherWidget');
         $this->view->assignMultiple([
@@ -107,10 +107,10 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
     {
 
         $url = 'https://' . $this->options['language'] . '.wttr.in/' . $this->getLocation() .  '?format=%c|%C|%t|%w|%l';
-     #   $cacheHash = md5($url);
-     #   if ($weatherDetails = $this->cache->get($cacheHash)) {
-     #       return $weatherDetails;
-     #   }
+        $cacheHash = md5($url);
+        if ($weatherDetails = $this->cache->get($cacheHash)) {
+            return $weatherDetails;
+        }
 
         $weather = GeneralUtility::getUrl($url);
         $weatherDetails = [];
@@ -119,7 +119,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
         }
 
         if(!empty($weatherDetails)){
-       #     $this->cache->set($cacheHash, $weatherDetails, ['dashboard_weather'], $this->options['lifeTime']);
+            $this->cache->set($cacheHash, $weatherDetails, ['dashboard_weather'], $this->options['lifeTime']);
         }
         return $weatherDetails;
     }
@@ -137,8 +137,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
     public function getButton(): array
     {
         return [
-            'link' => $this->uriBuilder->buildUriFromRoute('dashboard', ['location' => 'abc']),
-            'title' => 'save location'
+            'link' => $this->uriBuilder->buildUriFromRoute('dashboard', ['location' => $this->backendUserLocation])
         ];
     }
     protected function getBackendUserLocation(): string
