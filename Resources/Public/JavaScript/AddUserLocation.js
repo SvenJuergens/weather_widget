@@ -15,7 +15,11 @@ define(["require", "TYPO3/CMS/Core/Ajax/AjaxRequest", "TYPO3/CMS/Core/Event/Regu
         button.addEventListener('click', function (e){
          // e.preventDefault();
           let location = self.querySelector('#weatherWidgetLocation').value;
-          new AjaxRequest(TYPO3.settings.ajaxUrls.add_userlocation).withQueryArguments({location: location}).get();
+          new AjaxRequest(TYPO3.settings.ajaxUrls.add_userlocation).withQueryArguments(
+            {
+              location: location,
+              t: Date.now()
+            }).get();
         })
       })).delegateTo(document, this.selector)
     }

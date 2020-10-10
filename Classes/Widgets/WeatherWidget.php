@@ -149,7 +149,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
             return '';
         }
 
-        return $backendUser->uc['BackendComponents']['States']['DashboardWeatherWidget']['location'] ?? '';
+        return $backendUser->uc['DashboardWeatherWidget']['location'] ?? '';
     }
 
 

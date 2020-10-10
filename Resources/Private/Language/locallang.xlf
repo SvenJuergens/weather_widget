@@ -4,7 +4,10 @@
 		<header/>
 		<body>
 			<trans-unit id="button.title" xml:space="preserve">
-				<source>Set Location</source>
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="otherLocation" xml:space="preserve">
+				<source>Other Location</source>
 			</trans-unit>
 		</body>
 	</file>

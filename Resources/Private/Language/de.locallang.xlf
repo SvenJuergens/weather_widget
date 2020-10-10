@@ -4,8 +4,12 @@
 		<header/>
 		<body>
 			<trans-unit id="button.title" xml:space="preserve">
-				<source>Set Location</source>
-				<target>setze Standort</target>
+				<source>Save</source>
+				<target>speichern</target>
+			</trans-unit>
+			<trans-unit id="otherLocation" xml:space="preserve">
+				<source>Other Location</source>
+				<target>anderer Ort</target>
 			</trans-unit>
 		</body>
 	</file>

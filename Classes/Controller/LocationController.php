@@ -52,7 +52,7 @@ class LocationController
         if (is_array($backendUserRecord) && isset($backendUserRecord['uc'])) {
             $uc = unserialize($backendUserRecord['uc'], ['allowed_classes' => [\stdClass::class]]);
             if (is_array($uc)) {
-                $uc['BackendComponents']['States']['DashboardWeatherWidget']['location'] = $this->backendUserLocation;
+                $uc['DashboardWeatherWidget']['location'] = $this->backendUserLocation;
                 $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('be_users');
                 $connection->update('be_users', ['uc' => serialize($uc)], ['uid' => $backendUserId]);
             }
