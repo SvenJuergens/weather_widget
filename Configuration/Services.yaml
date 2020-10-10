@@ -24,8 +24,8 @@ services:
       - name: dashboard.widget
         identifier: 'weatherWidget'
         groupNames: 'general'
-        title: 'Weather Widget'
-        description: 'Current weather by Wttr.in'
+        title: 'LLL:EXT:weather_widget/Resources/Private/Language/locallang.xlf:widgets.weather.title'
+        description: 'LLL:EXT:weather_widget/Resources/Private/Language/locallang.xlf:widgets.weather.description'
         iconIdentifier: 'actions-cloud'
         height: 'medium'
         width: 'small'
