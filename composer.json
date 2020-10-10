@@ -1,7 +1,7 @@
 {
     "name": "svenjuergens/weather-widget",
     "type": "typo3-cms-extension",
-    "description": "Weather by Wttr.in",
+    "description": "TYPO3 Weather Widget with the help of Wttr.in",
 	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
