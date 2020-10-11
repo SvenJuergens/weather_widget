@@ -14,11 +14,11 @@ composer require svenjuergens/weather-widget
 
 or use the ExtensionManager.
 
-##Example:
+## Example:
 **Frontend of the Widget**
 
 ![Example](https://raw.githubusercontent.com/SvenJuergens/weather_widget/main/Documentation/frontend.png)
 
-**Backend of the Widget (MouseOver)**
+**Backend of the Widget (width MouseOver)**
 
-![Example](https://raw.githubusercontent.com/SvenJuergens/weather_widget/main/Documentation/backend.png)
+![Example2](https://raw.githubusercontent.com/SvenJuergens/weather_widget/main/Documentation/backend.png)
