@@ -9,7 +9,9 @@ define(["require", "TYPO3/CMS/Core/Ajax/AjaxRequest", "TYPO3/CMS/Core/Event/Regu
     initialize() {
       new RegularEvent("widgetContentRendered", (function (e) {
         e.preventDefault();
-        // Generate a random number between 1 and 32
+        if(this.getAttribute('data-widget-key') !== 'weatherWidget'){
+            return false;
+        }
         let button = this.querySelector('#weatherWidgetSetLocation');
         self = this;
         button.addEventListener('click', function (e){
