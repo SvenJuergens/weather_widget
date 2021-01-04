@@ -17,11 +17,11 @@ namespace SvenJuergens\WeatherWidget\Widgets;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface as Cache;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Dashboard\Widgets\AdditionalCssInterface;
-use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Dashboard\Widgets\RequireJsModuleInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetConfigurationInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetInterface;
@@ -90,7 +90,6 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
 
     public function renderWidgetContent(): string
     {
-
         $this->view->setTemplate('WeatherWidget');
         $this->view->assignMultiple([
             'weather' =>  $this->getWeather() ?: '',
@@ -102,11 +101,9 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
         return $this->view->render();
     }
 
-
     protected function getWeather(): array
     {
-
-        $url = 'https://' . $this->options['language'] . '.wttr.in/' . $this->getLocation() .  '?format=%c|%C|%t|%w|%l';
+        $url = 'https://' . $this->options['language'] . '.wttr.in/' . $this->getLocation() . '?format=%c|%C|%t|%w|%l';
         $cacheHash = md5($url);
         if ($weatherDetails = $this->cache->get($cacheHash)) {
             return $weatherDetails;
@@ -118,7 +115,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
             $weatherDetails = explode('|', trim($weather));
         }
 
-        if(!empty($weatherDetails)){
+        if (!empty($weatherDetails)) {
             $this->cache->set($cacheHash, $weatherDetails, ['dashboard_weather'], $this->options['lifeTime']);
         }
         return $weatherDetails;
@@ -150,7 +147,6 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
 
         return $backendUser->uc['DashboardWeatherWidget']['location'] ?? '';
     }
-
 
     protected function getBackendUserAuthentication(): ?BackendUserAuthentication
     {
