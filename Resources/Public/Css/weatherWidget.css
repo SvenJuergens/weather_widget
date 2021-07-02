@@ -23,7 +23,7 @@
 }
 .weatherWidgetContent .temperature-2{
     font-size: 175%;
-    line-height: 1.75rem;
+    text-align: center;
 }
 .weatherWidgetContent div{
     display: flex;
