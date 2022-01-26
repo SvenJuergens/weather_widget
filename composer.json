@@ -24,9 +24,5 @@
 		"typo3/cms": {
 			"extension-key": "weather_widget"
 		}
-	},
-    "replace": {
-        "svenjuergens/weather-widget": "self.version",
-        "typo3-ter/weather-widget": "self.version"
-    }
+	}
 }
