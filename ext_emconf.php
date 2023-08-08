@@ -17,13 +17,10 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Sven Jürgens',
     'author_email' => 'typo3@blue-side.de',
     'state' => 'beta',
-    'uploadfolder' => 0,
-    'createDirs' => '',
-    'clearCacheOnLoad' => 0,
-    'version' => '1.1.2',
+    'version' => '2.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-11.9.99',
+            'typo3' => '12.4.0-12.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],
