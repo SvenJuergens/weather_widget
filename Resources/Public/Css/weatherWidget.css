@@ -1,7 +1,6 @@
 .weatherWidgetContent{
     height: 100%;
     width: 100%;
-    background-image: url(https://source.unsplash.com/600x600/?berlin);
     background-repeat: no-repeat;
     background-size: cover;
     text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);

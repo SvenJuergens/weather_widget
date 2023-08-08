@@ -1,0 +1,2 @@
+# Pattern: templates.typo3/cms-dashboard."something-unique" = "overriding-extension-composer-name":"entry-path"
+templates.typo3/cms-dashboard.1691478600 = svenjuergens/weather-widget:Resources/Private

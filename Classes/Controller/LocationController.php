@@ -16,11 +16,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LocationController
 {
-
     /**
      * @var string
      */
-    private $backendUserLocation = '';
+    private string $backendUserLocation = '';
 
     /**
      * @param ServerRequestInterface $request

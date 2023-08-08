@@ -17,88 +17,76 @@ namespace SvenJuergens\WeatherWidget\Widgets;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface as Cache;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Dashboard\Widgets\AdditionalCssInterface;
-use TYPO3\CMS\Dashboard\Widgets\RequireJsModuleInterface;
+use TYPO3\CMS\Dashboard\Widgets\JavaScriptInterface;
+use TYPO3\CMS\Dashboard\Widgets\RequestAwareWidgetInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetConfigurationInterface;
 use TYPO3\CMS\Dashboard\Widgets\WidgetInterface;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
-class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJsModuleInterface
+class WeatherWidget implements WidgetInterface, RequestAwareWidgetInterface, AdditionalCssInterface, JavaScriptInterface
 {
-    /**
-     * @var WidgetConfigurationInterface
-     */
-    private $configuration;
-
-    /**
-     * @var StandaloneView
-     */
-    private $view;
-
-    /**
-     * @var Cache
-     */
-    private $cache;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var UriBuilder
-     */
-    protected $uriBuilder;
+    protected ServerRequestInterface $request;
 
     /**
      * @var string
      */
-    protected $backendUserLocation = '';
+    protected string $backendUserLocation = '';
 
     /**
      * WeatherWidget constructor.
      * @param WidgetConfigurationInterface $configuration
      * @param Cache $cache
-     * @param StandaloneView $view
+     * @param BackendViewFactory $backendViewFactory
      * @param UriBuilder $uriBuilder
      * @param array $options
      */
     public function __construct(
-        WidgetConfigurationInterface $configuration,
-        Cache $cache,
-        StandaloneView $view,
-        UriBuilder $uriBuilder,
-        array $options = []
+        private readonly WidgetConfigurationInterface $configuration,
+        private readonly Cache $cache,
+        private readonly BackendViewFactory $backendViewFactory,
+        private readonly UriBuilder $uriBuilder,
+        private array $options = []
     ) {
-        $this->configuration = $configuration;
-        $this->view = $view;
-        $this->cache = $cache;
         $this->backendUserLocation = $this->getBackendUserLocation();
         $this->options = array_merge(
             [
                 'lifeTime' => 3600,
-                'language' => $this->getBackendUserAuthentication()->uc['lang'] ?: 'en'
+                'language' => $this->getBackendUserAuthentication()->user['lang'] ?: 'en',
             ],
             $options
         );
-        $this->uriBuilder = $uriBuilder;
     }
 
+    public function setRequest(ServerRequestInterface $request): void
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @throws RouteNotFoundException
+     */
     public function renderWidgetContent(): string
     {
-        $this->view->setTemplate('WeatherWidget');
-        $this->view->assignMultiple([
+        // The second argument is the Composer 'name' of the extension that adds the widget.
+        // It is needed to instruct BackendViewFactory to look up templates in this package
+        // next to the default location 'typo3/cms-dashboard', too.
+        $view = $this->backendViewFactory->create($this->request, ['typo3/cms-dashboard', 'svenjuergens/weather-widget']);
+        $view->assignMultiple([
             'weather' =>  $this->getWeather() ?: '',
             'options' => $this->options,
             'button' => $this->getButton(),
             'location' => $this->backendUserLocation,
             'configuration' => $this->configuration,
         ]);
-        return $this->view->render();
+        return $view->render('Widgets/WeatherWidget');
     }
 
     protected function getWeather(): array
@@ -131,10 +119,13 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
         return ['EXT:weather_widget/Resources/Public/Css/weatherWidget.css'];
     }
 
+    /**
+     * @throws RouteNotFoundException
+     */
     public function getButton(): array
     {
         return [
-            'link' => $this->uriBuilder->buildUriFromRoute('dashboard', ['location' => $this->backendUserLocation])
+            'link' => $this->uriBuilder->buildUriFromRoute('dashboard', ['location' => $this->backendUserLocation]),
         ];
     }
     protected function getBackendUserLocation(): string
@@ -145,7 +136,7 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
             return '';
         }
 
-        return $backendUser->uc['DashboardWeatherWidget']['location'] ?? '';
+        return $backendUser->uc['DashboardWeatherWidget']['location'] ?? 'Berlin';
     }
 
     protected function getBackendUserAuthentication(): ?BackendUserAuthentication
@@ -153,10 +144,17 @@ class WeatherWidget implements WidgetInterface, AdditionalCssInterface, RequireJ
         return $GLOBALS['BE_USER'];
     }
 
-    public function getRequireJsModules(): array
+    public function getJavaScriptModuleInstructions(): array
     {
         return [
-            'TYPO3/CMS/WeatherWidget/AddUserLocation',
+            JavaScriptModuleInstruction::create(
+                '@svenjuergens/weather-widget/addUserLocation.js'
+            )->invoke('initialize'),
         ];
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

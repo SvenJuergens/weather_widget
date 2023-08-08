@@ -16,7 +16,6 @@ services:
   dashboard.widget.weatherWidget:
     class: 'SvenJuergens\WeatherWidget\Widgets\WeatherWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $cache: '@cache.dashboard.weather'
       $options:
         location: 'Berlin'
